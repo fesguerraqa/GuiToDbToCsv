@@ -8,10 +8,11 @@ import java.sql.*;
 
 public class DbWorker {
 
-
     private static final String MYSQL_URL = "jdbc:mysql://localhost:3306/gui_to_db_to_csv";
     private static final String MYSQL_USER = "root";
     private static final String MYSQL_PWD = "mysqlt3st!";
+    private static final String DIR_CSV =
+            "/Users/jjesguerramba2023/IdeaProjects/TestAuto/GuiToDbToCsv/artifacts/csv/";
 
     public Connection dbConnection;
     public PreparedStatement statement;
@@ -187,9 +188,13 @@ public class DbWorker {
         statement = dbConnection.prepareStatement(query);
         ResultSet rs = statement.executeQuery();
 
-        String tempPath = "Sample.csv";
+        String fileName = "ExportedResults_" + System.currentTimeMillis();;
 
-        BufferedWriter fileWriter = new BufferedWriter(new FileWriter(tempPath));
+        BufferedWriter fileWriter = new BufferedWriter(
+                new FileWriter(
+                        DIR_CSV
+                                + fileName
+                                + ".csv"));
 
         String headerText = attenTestParam.run_time.toString()
                 + "," + attenTestParam.test_bench_id.toString()
@@ -215,19 +220,6 @@ public class DbWorker {
             float floorPass = rs.getFloat(attenTestParam.floor_pass.toString());
             String testStatus = rs.getString(attenTestParam.test_status.toString());
 
-//            String studentName = rs.getString("student_name");
-//            float rating = rs.getFloat("rating");
-//            Timestamp timestamp = rs.getTimestamp("timestamp");
-//            String comment = rs.getString("comment");
-//
-//            if (comment == null) {
-//                comment = "";   // write empty value for null
-//            } else {
-//                comment = "\"" + comment + "\""; // escape double quotes
-//            }
-
-//            String line = String.format("\"%s\",%s,%.1f,%s,%s",
-//                    courseName, studentName, rating, timestamp, comment);
 
             String line = String.format("%d,%d,%d,%f,%f,%f,%f,%s",
                     runTime, testBench, serialNum, txPower, rxPower, ceilingPass, floorPass, testStatus);
@@ -236,10 +228,7 @@ public class DbWorker {
             fileWriter.write(line);
         }
 
-//        statement.close();
         fileWriter.close();
-        //prettyPrintRs(rs);
-
         disconnectDb();
     }
 

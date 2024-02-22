@@ -4,17 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ea970531-55b5-4d3b-a363-9e3334c36b4a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/db/DbWorker.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tools/HelperTool.java" afterDir="false" />
+    <list default="true" id="ea970531-55b5-4d3b-a363-9e3334c36b4a" name="Changes" comment="Initial Commit. Reading from DB and Writing to CSV File is initially working.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/gui/testrunner/PowerReadTest.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/gui/testrunner/PowerReadTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/db/DbWorker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/db/DbWorker.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,6 +37,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.Main.executor": "Run",
+    "Application.PowerReadTest.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
@@ -58,6 +53,7 @@
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -95,21 +91,40 @@
       <workItem from="1708548932410" duration="179000" />
       <workItem from="1708549132506" duration="428000" />
       <workItem from="1708549682873" duration="68000" />
-      <workItem from="1708549782826" duration="4119000" />
+      <workItem from="1708549782826" duration="10152000" />
     </task>
+    <task id="LOCAL-00001" summary="Initial Commit. Reading from DB and Writing to CSV File is initially working.">
+      <option name="closed" value="true" />
+      <created>1708554131551</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1708554131551</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Initial Commit. Reading from DB and Writing to CSV File is initially working." />
+    <option name="LAST_COMMIT_MESSAGE" value="Initial Commit. Reading from DB and Writing to CSV File is initially working." />
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/gui/Main.java</url>
-          <line>13</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/GuiToDbToCsv/Main.java</url>
           <line>15</line>
