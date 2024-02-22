@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ea970531-55b5-4d3b-a363-9e3334c36b4a" name="Changes" comment="Redesigned GUI to use multiple JPanels for each section.">
+    <list default="true" id="ea970531-55b5-4d3b-a363-9e3334c36b4a" name="Changes" comment="GUI Layout improvements. Added MessageBoxes for error handling and confirmation to rerun test or save to DB.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gui/testrunner/PowerReadTest.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/testrunner/PowerReadTest.form" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/db/DbWorker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/db/DbWorker.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/gui/testrunner/PowerReadTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/testrunner/PowerReadTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tools/HelperTool.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/HelperTool.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,7 +91,7 @@
       <workItem from="1708548932410" duration="179000" />
       <workItem from="1708549132506" duration="428000" />
       <workItem from="1708549682873" duration="68000" />
-      <workItem from="1708549782826" duration="21954000" />
+      <workItem from="1708549782826" duration="28703000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit. Reading from DB and Writing to CSV File is initially working.">
       <option name="closed" value="true" />
@@ -116,7 +117,15 @@
       <option name="project" value="LOCAL" />
       <updated>1708612590777</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="GUI Layout improvements. Added MessageBoxes for error handling and confirmation to rerun test or save to DB.">
+      <option name="closed" value="true" />
+      <created>1708617385530</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1708617385530</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -137,7 +146,8 @@
     <MESSAGE value="Initial Commit. Reading from DB and Writing to CSV File is initially working." />
     <MESSAGE value="GUI now working. Logic is also in place for Min and Max." />
     <MESSAGE value="Redesigned GUI to use multiple JPanels for each section." />
-    <option name="LAST_COMMIT_MESSAGE" value="Redesigned GUI to use multiple JPanels for each section." />
+    <MESSAGE value="GUI Layout improvements. Added MessageBoxes for error handling and confirmation to rerun test or save to DB." />
+    <option name="LAST_COMMIT_MESSAGE" value="GUI Layout improvements. Added MessageBoxes for error handling and confirmation to rerun test or save to DB." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

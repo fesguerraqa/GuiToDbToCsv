@@ -1,10 +1,13 @@
 package db;
 
+import com.mysql.cj.x.protobuf.MysqlxNotice;
+import tools.HelperTool;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.*;
+import java.util.Date;
 
 public class DbWorker {
 
@@ -26,18 +29,19 @@ public class DbWorker {
     }
 
     /**
-     * DB method to create a CSV File Table. This is only used during setup.
+     * DB method to create a Power Test Table. This is only used during setup.
      * @throws SQLException
      */
-    public void createCsvFileTable() throws SQLException {
+    public void createPowerReadTable() throws SQLException {
 
         connectDb();
 
-        String createTable = "CREATE TABLE " + dbTable.csv_file
-                + "(" + CsvFile.csvFileParam.import_time + " BIGINT NOT NULL"
-                + ", " + CsvFile.csvFileParam.filename + " VARCHAR(255) NOT NULL"
-                + ", " + CsvFile.csvFileParam.filepath + " VARCHAR(255) NOT NULL"
-                + ", " + CsvFile.csvFileParam.md5sum + " VARCHAR(255) NOT NULL"
+        String createTable = "CREATE TABLE " + dbTable.power_test
+                + "(" + PowerTest.powerTestParams.test_time + " BIGINT NOT NULL"
+                + ", " + PowerTest.powerTestParams.min_power + " FLOAT NOT NULL"
+                + ", " + PowerTest.powerTestParams.max_power + " FLOAT NOT NULL"
+                + ", " + PowerTest.powerTestParams.actual_power + " FLOAT NOT NULL"
+                + ", " + PowerTest.powerTestParams.test_status + " VARCHAR(255) NOT NULL"
                 + ")";
 
         statement = dbConnection.prepareStatement(createTable);
@@ -46,46 +50,14 @@ public class DbWorker {
         disconnectDb();
     }
 
-    /**
-     * DB method to create a CSV File Table. This is only used during setup.
-     * @throws SQLException
-     */
-//    public void createAttenuationTestTable() throws SQLException {
-//        connectDb();
-//
-//        String createTable = "CREATE TABLE " + csvToDbTable.attenuation_test
-//                + "(" + AttenuationTest.attenTestParam.run_time + " INTEGER NOT NULL"
-//                + ", " + AttenuationTest.attenTestParam.test_bench_id + " INTEGER NOT NULL"
-//                + ", " + AttenuationTest.attenTestParam.serial_number + " INTEGER NOT NULL"
-//                + ", " + AttenuationTest.attenTestParam.tx_power + " FLOAT NOT NULL"
-//                + ", " + AttenuationTest.attenTestParam.rx_power + " FLOAT NOT NULL"
-//                + ", " + AttenuationTest.attenTestParam.ceiling_pass + " FLOAT NOT NULL"
-//                + ", " + AttenuationTest.attenTestParam.floor_pass + " FLOAT NOT NULL"
-//                + ", " + AttenuationTest.attenTestParam.test_status + " VARCHAR(255) NOT NULL"
-//                + ")";
-//
-//        statement = dbConnection.prepareStatement(createTable);
-//        statement.execute();
-//
-//        disconnectDb();
-//    }
 
     /**
-     * Heloer tool to clear the AttenuationTest Table if I wanted to retest the inserts.
+     * Heloer tool to clear the Power Table if I wanted to retest the inserts.
      * @throws SQLException
      */
-    public void clearAttenuationTestTable() throws SQLException {
+    public void clearPowerTestTable() throws SQLException {
 
-        clearTable(dbTable.attenuation_test.toString());
-    }
-
-    /**
-     * Heloer tool to clear the CsvFile Table if I wanted to retest the inserts.
-     * @throws SQLException
-     */
-    public void clearCsvFileTable() throws SQLException {
-
-        clearTable(dbTable.csv_file.toString());
+        clearTable(dbTable.power_test.toString());
     }
 
     private void clearTable(String table) throws SQLException {
@@ -98,41 +70,6 @@ public class DbWorker {
 
         disconnectDb();
     }
-
-    /**
-     * DB Method to insert a row of the Attenuation Test from the CSV File.
-     * @param at Attenuation Test
-     * @throws SQLException
-     */
-//    public void insertAttenuationTest(AttenuationTest at) throws SQLException {
-//
-//        connectDb();
-//
-//        String query = "INSERT INTO " + csvToDbTable.attenuation_test + "("
-//                + AttenuationTest.attenTestParam.run_time
-//                + ", " + AttenuationTest.attenTestParam.test_bench_id
-//                + ", " + AttenuationTest.attenTestParam.serial_number
-//                + ", " + AttenuationTest.attenTestParam.tx_power
-//                + ", " + AttenuationTest.attenTestParam.rx_power
-//                + ", " + AttenuationTest.attenTestParam.ceiling_pass
-//                + ", " + AttenuationTest.attenTestParam.floor_pass
-//                + ", " + AttenuationTest.attenTestParam.test_status
-//                + ")"
-//                + "VALUES (?,?,?,?,?,?,?,?)";
-//
-//        statement = dbConnection.prepareStatement(query);
-//        statement.setInt(1, at.getRunTime());
-//        statement.setInt(2, at.getTestBench());
-//        statement.setInt(3, at.getSerialNumber());
-//        statement.setFloat(4, at.getTxPower());
-//        statement.setFloat(5, at.getRxPower());
-//        statement.setFloat(6, at.getCeilingPass());
-//        statement.setFloat(7, at.getFloorPass());
-//        statement.setString(8, at.getTestStatus());
-//        statement.execute();
-//
-//        disconnectDb();
-//    }
 
     /**
      * Debug Tool in printing the ResultSet retrieved.
@@ -155,35 +92,62 @@ public class DbWorker {
     }
 
     /**
-     * DB Method to insert the details around the CSV file to track the history of its import.
-     * @param cf
+     * DB Method to insert Test Results.
+     * @param pt
      * @throws SQLException
      */
-    public void insertCsvFileData(CsvFile cf) throws SQLException {
+    public void savePowerTestResultToDb(PowerTest pt) throws SQLException {
         connectDb();
 
-        String query = "INSERT INTO " + dbTable.csv_file + "("
-                + CsvFile.csvFileParam.import_time
-                + ", " + CsvFile.csvFileParam.filename
-                + ", " + CsvFile.csvFileParam.filepath
-                + ", " + CsvFile.csvFileParam.md5sum
+        String query = "INSERT INTO " + dbTable.power_test + "("
+                + PowerTest.powerTestParams.test_time
+                + ", " + PowerTest.powerTestParams.min_power
+                + ", " + PowerTest.powerTestParams.max_power
+                + ", " + PowerTest.powerTestParams.actual_power
+                + ", " + PowerTest.powerTestParams.test_status
                 + ")"
-                + "VALUES (?,?,?,?)";
+                + "VALUES (?,?,?,?,?)";
 
         statement = dbConnection.prepareStatement(query);
-        statement.setBigDecimal(1, cf.getImportTime());
-        statement.setString(2, cf.getFilename());
-        statement.setString(3, cf.getFilepath());
-        statement.setString(4, cf.getMd5sum());
+        statement.setLong(1, pt.getTestTime());
+        statement.setFloat(2, pt.getMinPower());
+        statement.setFloat(3, pt.getMaxPower());
+        statement.setFloat(4, pt.getActualPower());
+        statement.setString(5, pt.getTestStatus());
         statement.execute();
 
         disconnectDb();
     }
 
-    public void readDbContents() throws SQLException, IOException {
+    /**
+     * Exports the Power Test Table into a CSV File Raw(Timestamp in DB is in unix time format)
+     * @throws SQLException
+     * @throws IOException
+     */
+    public void exportToCsvRaw() throws SQLException, IOException {
+        exportToCsvFile(false);
+    }
+
+    /**
+     * Exports the Power Test Table into a CSV File with the timestamp in DATE format. In DB the timestamp is
+     * in unix time format
+     * @throws SQLException
+     * @throws IOException
+     */
+    public void exportToCsvPretty() throws SQLException, IOException {
+        exportToCsvFile(true);
+    }
+
+    /**
+     * Main method in exporting the Power Test table into a CSV File.
+     * @param prettyPrint
+     * @throws SQLException
+     * @throws IOException
+     */
+    private void exportToCsvFile(boolean prettyPrint) throws SQLException, IOException {
         connectDb();
 
-        String query = "SELECT * FROM " + dbTable.attenuation_test;
+        String query = "SELECT * FROM " + dbTable.power_test;
 
         statement = dbConnection.prepareStatement(query);
         ResultSet rs = statement.executeQuery();
@@ -196,33 +160,36 @@ public class DbWorker {
                                 + fileName
                                 + ".csv"));
 
-        String headerText = attenTestParam.run_time.toString()
-                + "," + attenTestParam.test_bench_id.toString()
-                + "," + attenTestParam.serial_number.toString()
-                + "," + attenTestParam.tx_power.toString()
-                + "," + attenTestParam.rx_power.toString()
-                + "," + attenTestParam.ceiling_pass.toString()
-                + "," + attenTestParam.floor_pass.toString()
-                + "," + attenTestParam.test_status.toString();
+        String headerText = PowerTest.powerTestParams.test_time.toString()
+                + "," + PowerTest.powerTestParams.min_power.toString()
+                + "," + PowerTest.powerTestParams.max_power.toString()
+                + "," + PowerTest.powerTestParams.actual_power.toString()
+                + "," + PowerTest.powerTestParams.test_status.toString()
+                ;
 
-        // write header line containing column names
+        // First Row is the Headers
         fileWriter.write(headerText);
 
         while (rs.next()) {
-            int runTime = rs.getInt(attenTestParam.run_time.toString());
-            int testBench = rs.getInt(attenTestParam.test_bench_id.toString());
-            int serialNum = rs.getInt(attenTestParam.serial_number.toString());
+            long testTime = rs.getLong(PowerTest.powerTestParams.test_time.toString());
+            float minPower = rs.getFloat(PowerTest.powerTestParams.min_power.toString());
+            float maxPower = rs.getFloat(PowerTest.powerTestParams.max_power.toString());
+            float actualPower = rs.getFloat(PowerTest.powerTestParams.actual_power.toString());
+            String testStatus = rs.getString(PowerTest.powerTestParams.test_status.toString());
 
-            // TODO Maybe just use INT for the floats that want int
-            float txPower = rs.getFloat(attenTestParam.tx_power.toString());
-            float rxPower = rs.getFloat(attenTestParam.rx_power.toString());
-            float ceilingPass = rs.getFloat(attenTestParam.ceiling_pass.toString());
-            float floorPass = rs.getFloat(attenTestParam.floor_pass.toString());
-            String testStatus = rs.getString(attenTestParam.test_status.toString());
+            String line;
 
+            if (prettyPrint){
+                // Convert unix time format into a DATE format
+                line = String.format("%s,%f,%f,%f,%s",
+                        HelperTool.prettyPrint(testTime)
+                        , minPower, maxPower, actualPower, testStatus);
+            }
+            else{
 
-            String line = String.format("%d,%d,%d,%f,%f,%f,%f,%s",
-                    runTime, testBench, serialNum, txPower, rxPower, ceilingPass, floorPass, testStatus);
+                line = String.format("%d,%f,%f,%f,%s",
+                        testTime, minPower, maxPower, actualPower, testStatus);
+            }
 
             fileWriter.newLine();
             fileWriter.write(line);
@@ -232,50 +199,8 @@ public class DbWorker {
         disconnectDb();
     }
 
-    public BigDecimal doesMd5sumExist(String md5sum) throws SQLException {
-        connectDb();
-
-        String query = "SELECT * FROM " + dbTable.csv_file
-                + " WHERE " + CsvFile.csvFileParam.md5sum +  "=" + "\"" + md5sum + "\"";
-
-        statement = dbConnection.prepareStatement(query);
-        ResultSet result = statement.executeQuery();
-
-        boolean hasResults = result.next();
-
-        // We assign this key to tell the calling instance that if this doesn't get changed that the CSV file
-        // has not been processed.
-        BigDecimal tempTime = CsvFile.secretKey;
-
-        if (hasResults) {
-
-            // We will return the import time of the CSV File since it wa already imported.
-            tempTime = result.getBigDecimal(CsvFile.csvFileParam.import_time.toString());
-        }
-
-        disconnectDb();
-
-        return tempTime;
-    }
 
     public enum dbTable {
-        attenuation_test
-        , csv_file
+        power_test
     }
-
-    private String includeQuotes(String s){
-        return "\"" + s + "\"";
-    }
-
-    public enum attenTestParam{
-        run_time
-        , test_bench_id
-        , serial_number
-        , tx_power
-        , rx_power
-        , ceiling_pass
-        , floor_pass
-        , test_status
-    }
-
 }

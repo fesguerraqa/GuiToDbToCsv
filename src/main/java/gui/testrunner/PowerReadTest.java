@@ -1,5 +1,8 @@
 package gui.testrunner;
 
+import db.DbWorker;
+import db.PowerTest;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -8,6 +11,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Date;
 
 public class PowerReadTest extends JFrame{
     private JPanel jPnlMain;
@@ -105,7 +109,14 @@ public class PowerReadTest extends JFrame{
         updateTestStatus(s);
     }
 
-    private boolean returnIfInputValuesAreValid() {
+    /**
+     * Focus of method is to check the following:
+     * - Correct decimal inputs for Min, Max and Result
+     * - Min should be less than Max
+     * - Min should not be equal to Max(TODO: There can be an arguement that this can be allowed)
+     * @return
+     */
+    private boolean checkForValidInputs() {
 
         boolean inputValuesValid = true;
 
@@ -115,21 +126,18 @@ public class PowerReadTest extends JFrame{
             if (myMin > myMax) {
 
                 String errMinMax = "INVALID: MIN CANNOT be greater than MAX";
-
                 inputValuesValid = false;
-                disableDbButton();
                 showErrorMessageBox(errMinMax);
-                //quickConfirmDialog(errMinMax);
             }
             else if (myMin == myMax) {
 
                 String errEqual = "INVALID: MIN and MAX Cannot be EQUAL";
-                disableDbButton();
-                showErrorMessageBox(errEqual);
                 inputValuesValid = false;
+                showErrorMessageBox(errEqual);
             }
         }
         catch (Exception ex){
+
             String exception = ex.getMessage();
             showErrorMessageBox("Invalid INPUT FOUND: " + exception);
         }
@@ -155,35 +163,56 @@ public class PowerReadTest extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                boolean inputsAreValid = returnIfInputValuesAreValid();
+                boolean inputsAreValid = checkForValidInputs();
 
                 if (inputsAreValid) {
 
-                    processTest();
+                    boolean testStatus = processTest();
 
-                    saveOrRerunTest();
+                    try {
+                        saveOrRerunTest(testStatus);
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
             };
         });
     }
 
-    private void saveOrRerunTest(){
-        String testStatus = "NOWHERE LAND";
+    private void saveOrRerunTest(boolean b) throws SQLException {
+
+        String myTestResult = "FAIL";
+
+        if(b){
+            myTestResult = "PASS";
+        }
+
+        updateTestStatus(myTestResult);
 
         // TODO: Research the Frame.getFrames more.
         int result = JOptionPane.showConfirmDialog(Frame.getFrames()[0]
                 , "Save the results in the database?\n\nYES to Save.\nNO to rerun test."
-                , "Test Completed",
+                , "Test Complete: " + myTestResult,
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
         if(result == JOptionPane.YES_OPTION){
-            saveResultsToDb();
-            testStatus = "Saved in DB!";
+            PowerTest pt = new PowerTest(
+                    new Date().getTime()
+                    , myMin
+                    , myMax
+                    , myResult
+                    , myTestResult
+            );
+
+            DbWorker dw = new DbWorker();
+            dw.savePowerTestResultToDb(pt);
+
+            myTestResult = "Saved in DB!";
         }else if (result == JOptionPane.NO_OPTION){
-            testStatus = "Lets do it again";
+            myTestResult = "Lets do it again";
         }
 
-        updateTestStatus(testStatus);
+        updateTestStatus(myTestResult);
     }
 
     private void saveResultsToDb() {
@@ -195,20 +224,20 @@ public class PowerReadTest extends JFrame{
     }
 
 
+    /**
+     * Focus of this method is to check for test logic.
+     * @return
+     */
     private boolean processTest() {
 
         refreshValues();
-
-        String testStatus = "PASS";
 
         boolean inRange = true;
 
         if (myResult < myMin || myResult > myMax){
             inRange = false;
-            testStatus = "FAILED";
         }
 
-        updateTestStatus(testStatus);
         return inRange;
     }
 }
