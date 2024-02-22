@@ -59,7 +59,7 @@ public class PowerReadTest extends JFrame{
 
         activateMouseListenersOnTxtFields();
 
-        simulateTest();
+        launchPowerCaptureTest();
     }
 
     /**
@@ -72,21 +72,21 @@ public class PowerReadTest extends JFrame{
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
 
-                updateTestStatus("Entering expected MIN value on GUI...");
+                updateTestStatusOnGui("Entering expected MIN value on GUI...");
             }
         });
         txtFldMaxValue.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                updateTestStatus("Entering expected MAX Value on GUI...");
+                updateTestStatusOnGui("Entering expected MAX Value on GUI...");
             }
         });
         txtFldResult.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                updateTestStatus("Entering Test Result on GUI...");
+                updateTestStatusOnGui("Entering Test Result on GUI...");
             }
         });
     }
@@ -106,7 +106,7 @@ public class PowerReadTest extends JFrame{
         //        , JOptionPane.QUESTION_MESSAGE
         );
 
-        updateTestStatus(s);
+        updateTestStatusOnGui(s);
     }
 
     /**
@@ -116,30 +116,13 @@ public class PowerReadTest extends JFrame{
      * - Min should not be equal to Max(TODO: There can be an arguement that this can be allowed)
      * @return
      */
-    private boolean checkForValidInputs() {
+    private boolean checkForValidInputs(PowerTest pt) {
 
         boolean inputValuesValid = true;
 
-        try {
-            refreshValues();
-
-            if (myMin > myMax) {
-
-                String errMinMax = "INVALID: MIN CANNOT be greater than MAX";
-                inputValuesValid = false;
-                showErrorMessageBox(errMinMax);
-            }
-            else if (myMin == myMax) {
-
-                String errEqual = "INVALID: MIN and MAX Cannot be EQUAL";
-                inputValuesValid = false;
-                showErrorMessageBox(errEqual);
-            }
-        }
-        catch (Exception ex){
-
-            String exception = ex.getMessage();
-            showErrorMessageBox("Invalid INPUT FOUND: " + exception);
+        if (pt.getTestStatus().equals(PowerTest.testStatusEnum.INVALID.toString())){
+            inputValuesValid = false;
+            showErrorMessageBox(pt.getTestStatusVerbose());
         }
 
         return inputValuesValid;
@@ -157,69 +140,80 @@ public class PowerReadTest extends JFrame{
         bttnSaveToDb.setVisible(false);
     }
 
-    private void simulateTest(){
+    private void launchPowerCaptureTest(){
 
         bttnRunSimTest.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                boolean inputsAreValid = checkForValidInputs();
+                try{
+                    refreshValues();
 
-                if (inputsAreValid) {
+                    PowerTest pt = new PowerTest(
+                            new Date().getTime()
+                            , myMin
+                            , myMax
+                            , myResult
+                    );
 
-                    boolean testStatus = processTest();
 
-                    try {
-                        saveOrRerunTest(testStatus);
-                    } catch (SQLException ex) {
-                        throw new RuntimeException(ex);
+                    if (!pt.getTestStatus().equals(PowerTest.testStatusEnum.INVALID.toString())) {
+
+                        //boolean testStatus = processTest();
+
+                        try {
+                            saveOrRerunTest( pt);
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     }
+                    else{
+                        showErrorMessageBox(pt.getTestStatusVerbose());
+                    }
+
                 }
+                catch (Exception ex){
+                    showErrorMessageBox("EXCEPTION: " + ex.getMessage());
+
+                }
+
             };
         });
     }
 
-    private void saveOrRerunTest(boolean b) throws SQLException {
+    private void saveOrRerunTest(PowerTest pt) throws SQLException {
 
-        String myTestResult = "FAIL";
+        String testStatus = pt.getTestStatus();
 
-        if(b){
-            myTestResult = "PASS";
-        }
-
-        updateTestStatus(myTestResult);
+        updateTestStatusOnGui(testStatus);
 
         // TODO: Research the Frame.getFrames more.
         int result = JOptionPane.showConfirmDialog(Frame.getFrames()[0]
                 , "Save the results in the database?\n\nYES to Save.\nNO to rerun test."
-                , "Test Complete: " + myTestResult,
+                , "Test Complete: " + testStatus,
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
         if(result == JOptionPane.YES_OPTION){
-            PowerTest pt = new PowerTest(
-                    new Date().getTime()
-                    , myMin
-                    , myMax
-                    , myResult
-                    , myTestResult
-            );
+//            PowerTest pt = new PowerTest(
+//                    new Date().getTime()
+//                    , myMin
+//                    , myMax
+//                    , myResult
+//            );
 
             DbWorker dw = new DbWorker();
             dw.savePowerTestResultToDb(pt);
 
-            myTestResult = "Saved in DB!";
+            testStatus = "Saved in DB!";
         }else if (result == JOptionPane.NO_OPTION){
-            myTestResult = "Lets do it again";
+            testStatus = "Lets do it again";
         }
 
-        updateTestStatus(myTestResult);
+        updateTestStatusOnGui(testStatus);
     }
 
-    private void saveResultsToDb() {
 
-    }
-
-    private void updateTestStatus(String s){
+    private void updateTestStatusOnGui(String s){
         lblCurrentStatus.setText(s);
     }
 

@@ -9,13 +9,76 @@ public class PowerTest {
     private float maxPower;
     private float actualPower;
     private String testStatus;
+    private String testStatusVerbose;
 
-    public PowerTest(long testTime, float minPower, float maxPower, float actualPower, String testStatus) {
+    public PowerTest(long testTime, float minPower, float maxPower, float actualPower) {
         this.testTime = testTime;
         this.minPower = minPower;
         this.maxPower = maxPower;
         this.actualPower = actualPower;
-        this.testStatus = testStatus;
+
+        checkForValidityOfInputs();
+
+        if(!this.testStatus.equals(testStatusEnum.INVALID.toString())){
+            printStatus("Prior to RUN TEST");
+            runTest();
+            printStatus("AFTER run TEST");
+        }
+    }
+
+    private void printStatus(String s) {
+        HelperTool.ezPrint(s + "--> Test Status: " + getTestStatus() + ", Verbose: " + getTestStatusVerbose());
+    }
+
+    private boolean runTest(){
+        boolean inRange = false;
+
+        if (this.actualPower < this.maxPower && this.actualPower > this.minPower){
+            inRange = true;
+            testStatus = testStatusEnum.PASS.toString();
+        }
+
+        this.testStatusVerbose = this.testStatus;
+
+        return inRange;
+    }
+
+    public String getTestStatusVerbose(){
+        return this.testStatusVerbose;
+    }
+
+    private boolean checkForValidityOfInputs(){
+
+        boolean inputValuesValid = true;
+
+        this.testStatus = testStatusEnum.FAIL.toString();
+
+        try {
+
+            if (this.minPower > this.maxPower) {
+
+                this.testStatusVerbose = "INVALID: MIN CANNOT be greater than MAX";
+                this.testStatus = testStatusEnum.INVALID.toString();
+                inputValuesValid = false;
+//                showErrorMessageBox(errMinMax);
+            }
+            else if (this.minPower == this.maxPower) {
+
+                this.testStatusVerbose = "INVALID: MIN and MAX Cannot be EQUAL";
+                this.testStatus = testStatusEnum.INVALID.toString();
+                inputValuesValid = false;
+//                showErrorMessageBox(errEqual);
+            }
+        }
+        catch (Exception ex){
+
+            String exception = ex.getMessage();
+            this.testStatusVerbose = testStatusEnum.INVALID.toString() + " INPUT FOUND: " + exception;
+            this.testStatus = testStatusEnum.INVALID.toString();
+            //showErrorMessageBox("Invalid INPUT FOUND: " + exception);
+        }
+
+        return inputValuesValid;
     }
 
     public long getTestTime() {
@@ -58,5 +121,11 @@ public class PowerTest {
         , max_power
         , actual_power
         , test_status
+    }
+
+    public enum testStatusEnum{
+        PASS
+        , FAIL
+        , INVALID
     }
 }
