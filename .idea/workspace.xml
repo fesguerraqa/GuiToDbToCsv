@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ea970531-55b5-4d3b-a363-9e3334c36b4a" name="Changes" comment="GUI now working. Logic is also in place for Min and Max.">
+    <list default="true" id="ea970531-55b5-4d3b-a363-9e3334c36b4a" name="Changes" comment="Redesigned GUI to use multiple JPanels for each section.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/gui/testrunner/PowerReadTest.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/testrunner/PowerReadTest.form" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/gui/testrunner/PowerReadTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/testrunner/PowerReadTest.java" afterDir="false" />
@@ -90,7 +90,7 @@
       <workItem from="1708548932410" duration="179000" />
       <workItem from="1708549132506" duration="428000" />
       <workItem from="1708549682873" duration="68000" />
-      <workItem from="1708549782826" duration="17202000" />
+      <workItem from="1708549782826" duration="21954000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit. Reading from DB and Writing to CSV File is initially working.">
       <option name="closed" value="true" />
@@ -108,7 +108,15 @@
       <option name="project" value="LOCAL" />
       <updated>1708563487508</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Redesigned GUI to use multiple JPanels for each section.">
+      <option name="closed" value="true" />
+      <created>1708612590777</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1708612590777</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -128,7 +136,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial Commit. Reading from DB and Writing to CSV File is initially working." />
     <MESSAGE value="GUI now working. Logic is also in place for Min and Max." />
-    <option name="LAST_COMMIT_MESSAGE" value="GUI now working. Logic is also in place for Min and Max." />
+    <MESSAGE value="Redesigned GUI to use multiple JPanels for each section." />
+    <option name="LAST_COMMIT_MESSAGE" value="Redesigned GUI to use multiple JPanels for each section." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

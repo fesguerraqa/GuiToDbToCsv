@@ -145,7 +145,7 @@
               <text value="Test Status:"/>
             </properties>
           </component>
-          <component id="de99c" class="javax.swing.JLabel" binding="lblPassOrFail">
+          <component id="de99c" class="javax.swing.JLabel" binding="lblCurrentStatus">
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="7" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>

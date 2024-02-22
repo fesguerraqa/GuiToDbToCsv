@@ -1,6 +1,7 @@
 package gui.testrunner;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -15,7 +16,7 @@ public class PowerReadTest extends JFrame{
     private JTextField txtFldResult;
     private JButton bttnRunSimTest;
     private JButton bttnSaveToDb;
-    private JLabel lblPassOrFail;
+    private JLabel lblCurrentStatus;
     private JPanel pnlMinVal;
     private JPanel pnlMaxValue;
     private JPanel pnlTestResult;
@@ -31,10 +32,7 @@ public class PowerReadTest extends JFrame{
     private int myResult;
 
 
-
     public static void main(String[] args) throws SQLException, IOException {
-
-
 
         new PowerReadTest();
 //        DbWorker dw = new DbWorker();
@@ -55,69 +53,92 @@ public class PowerReadTest extends JFrame{
 
         disableDbButton();
 
+        activateMouseListenersOnTxtFields();
 
         simulateTest();
+    }
 
+    /**
+     * This method contains adding Mouse Clicked Event listeners to all the Input Text Fields.
+     * There is text on the GUI displaying what the current user is doing with the GUI.
+     */
+    private void activateMouseListenersOnTxtFields(){
         txtFldMinValue.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                lblPassOrFail.setText("Entering expected MIN value on GUI...");
+
+                updateTestStatus("Entering expected MIN value on GUI...");
             }
         });
         txtFldMaxValue.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                lblPassOrFail.setText("Entering expected MAX Value on GUI...");
+                updateTestStatus("Entering expected MAX Value on GUI...");
             }
         });
         txtFldResult.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                lblPassOrFail.setText("Entering Test Result on GUI...");
+                updateTestStatus("Entering Test Result on GUI...");
             }
         });
     }
 
     private void refreshValues(){
+
         this.myMin = Integer.parseInt(txtFldMinValue.getText());
         this.myMax = Integer.parseInt(txtFldMaxValue.getText());
         this.myResult = Integer.parseInt(txtFldResult.getText());
-
     }
 
-    private boolean checkForValidMinMax() {
+    private void showErrorMessageBox(String s){
+        int result = JOptionPane.showConfirmDialog(this
+                , s
+                , "INVALID INPUT"
+                , JOptionPane.OK_OPTION
+        //        , JOptionPane.QUESTION_MESSAGE
+        );
 
-        boolean isValid = true;
+        updateTestStatus(s);
+    }
+
+    private boolean returnIfInputValuesAreValid() {
+
+        boolean inputValuesValid = true;
 
         try {
             refreshValues();
 
-
             if (myMin > myMax) {
-                lblPassOrFail.setText("INVALID: MIN Input CANNOT be greater than MAX");
-                isValid = false;
+
+                String errMinMax = "INVALID: MIN CANNOT be greater than MAX";
+
+                inputValuesValid = false;
                 disableDbButton();
-                JOptionPane.showMessageDialog(this, "ERROR: Min > Max");
-            } else if (myMin == myMax) {
-                lblPassOrFail.setText("INVALID: MIN AND MAX Cannot be EQUAL");
-                isValid = false;
+                showErrorMessageBox(errMinMax);
+                //quickConfirmDialog(errMinMax);
+            }
+            else if (myMin == myMax) {
+
+                String errEqual = "INVALID: MIN and MAX Cannot be EQUAL";
                 disableDbButton();
-                JOptionPane.showConfirmDialog(this, "ERROR: MIN = MAX");
+                showErrorMessageBox(errEqual);
+                inputValuesValid = false;
             }
         }
         catch (Exception ex){
-            lblPassOrFail.setText("SOMETHING FUNKY with INPUTS. ONLY Values only");
+            String exception = ex.getMessage();
+            showErrorMessageBox("Invalid INPUT FOUND: " + exception);
         }
 
-        return isValid;
+        return inputValuesValid;
     }
 
-    private void clearLabel(){
-
-        lblPassOrFail.setText("Editing... Please Complete Input");
+    private void quickConfirmDialog(String s){
+        JOptionPane.showConfirmDialog(this, s);
     }
 
     private void enableDbButton(){
@@ -134,42 +155,60 @@ public class PowerReadTest extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                boolean minMaxValid = checkForValidMinMax();
+                boolean inputsAreValid = returnIfInputValuesAreValid();
 
-                if (minMaxValid) {
+                if (inputsAreValid) {
 
-                    boolean withinRange = isWithinRange();
+                    processTest();
 
-                    setLabelText(withinRange);
+                    saveOrRerunTest();
                 }
-            }
+            };
+        });
+    }
 
+    private void saveOrRerunTest(){
+        String testStatus = "NOWHERE LAND";
 
-;        });
+        // TODO: Research the Frame.getFrames more.
+        int result = JOptionPane.showConfirmDialog(Frame.getFrames()[0]
+                , "Save the results in the database?\n\nYES to Save.\nNO to rerun test."
+                , "Test Completed",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+        if(result == JOptionPane.YES_OPTION){
+            saveResultsToDb();
+            testStatus = "Saved in DB!";
+        }else if (result == JOptionPane.NO_OPTION){
+            testStatus = "Lets do it again";
+        }
 
+        updateTestStatus(testStatus);
+    }
+
+    private void saveResultsToDb() {
 
     }
-    private boolean isWithinRange() {
+
+    private void updateTestStatus(String s){
+        lblCurrentStatus.setText(s);
+    }
+
+
+    private boolean processTest() {
 
         refreshValues();
+
+        String testStatus = "PASS";
 
         boolean inRange = true;
 
         if (myResult < myMin || myResult > myMax){
             inRange = false;
+            testStatus = "FAILED";
         }
 
+        updateTestStatus(testStatus);
         return inRange;
-    }
-    private void setLabelText(boolean withinRange) {
-
-        String finalTxt = "FAILED";
-
-        if (withinRange){
-            finalTxt = "PASS";
-        }
-
-        lblPassOrFail.setText(finalTxt);
-        enableDbButton();
     }
 }
