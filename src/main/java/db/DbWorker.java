@@ -1,13 +1,10 @@
 package db;
 
-import com.mysql.cj.x.protobuf.MysqlxNotice;
 import tools.HelperTool;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.*;
-import java.util.Date;
 
 public class DbWorker {
 
@@ -50,9 +47,8 @@ public class DbWorker {
         disconnectDb();
     }
 
-
     /**
-     * Heloer tool to clear the Power Table if I wanted to retest the inserts.
+     * Helper tool to clear the Power Table if I wanted to retest the inserts.
      * @throws SQLException
      */
     public void clearPowerTestTable() throws SQLException {
@@ -60,6 +56,11 @@ public class DbWorker {
         clearTable(dbTable.power_test.toString());
     }
 
+    /**
+     * Reusable method when we have multiple tables working with.
+     * @param table
+     * @throws SQLException
+     */
     private void clearTable(String table) throws SQLException {
 
         connectDb();
@@ -93,7 +94,7 @@ public class DbWorker {
 
     /**
      * DB Method to insert Test Results.
-     * @param pt
+     * @param pt PowerTest Instance
      * @throws SQLException
      */
     public void savePowerTestResultToDb(PowerTest pt) throws SQLException {
@@ -121,30 +122,33 @@ public class DbWorker {
 
     /**
      * Exports the Power Test Table into a CSV File Raw(Timestamp in DB is in unix time format)
+     * @param targetLocation Target path for CSV.
      * @throws SQLException
      * @throws IOException
      */
-    public void exportToCsvRaw() throws SQLException, IOException {
-        exportToCsvFile(false);
+    public void exportToCsvRaw(String targetLocation) throws SQLException, IOException {
+        exportToCsvFile(false, targetLocation);
     }
 
     /**
      * Exports the Power Test Table into a CSV File with the timestamp in DATE format. In DB the timestamp is
      * in unix time format
+     * @param targetLoc Target Path for CSV
      * @throws SQLException
      * @throws IOException
      */
-    public void exportToCsvPretty() throws SQLException, IOException {
-        exportToCsvFile(true);
+    public void exportToCsvPretty(String targetLoc) throws SQLException, IOException {
+        exportToCsvFile(true, targetLoc);
     }
 
     /**
      * Main method in exporting the Power Test table into a CSV File.
      * @param prettyPrint
+     * @param targetLocation Target Path for CSV
      * @throws SQLException
      * @throws IOException
      */
-    private void exportToCsvFile(boolean prettyPrint) throws SQLException, IOException {
+    private void exportToCsvFile(boolean prettyPrint, String targetLocation) throws SQLException, IOException {
         connectDb();
 
         String query = "SELECT * FROM " + dbTable.power_test;
@@ -156,7 +160,8 @@ public class DbWorker {
 
         BufferedWriter fileWriter = new BufferedWriter(
                 new FileWriter(
-                        DIR_CSV
+                        targetLocation
+                                + "/"
                                 + fileName
                                 + ".csv"));
 

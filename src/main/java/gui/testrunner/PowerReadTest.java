@@ -9,7 +9,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Date;
 
@@ -19,7 +22,7 @@ public class PowerReadTest extends JFrame{
     private JTextField txtFldMaxValue;
     private JTextField txtFldResult;
     private JButton bttnRunSimTest;
-    private JButton bttnSaveToDb;
+    private JButton bttnExportToCsv;
     private JLabel lblCurrentStatus;
     private JPanel pnlMinVal;
     private JPanel pnlMaxValue;
@@ -31,22 +34,18 @@ public class PowerReadTest extends JFrame{
     private JLabel lblResult;
     private JLabel lblStatusLabel;
 
-    private int myMin;
-    private int myMax;
-    private int myResult;
+    private int myMinPower;
+    private int myMaxPower;
+    private int myActualPower;
 
 
     public static void main(String[] args) throws SQLException, IOException {
 
         new PowerReadTest();
-//        DbWorker dw = new DbWorker();
-//        dw.readDbContents();
 
     }
 
     public PowerReadTest(){
-
-        //txtFldResult.setEditable(false);
 
         setTitle("Power Capture Tool");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -55,11 +54,57 @@ public class PowerReadTest extends JFrame{
         setLocationRelativeTo(null);
         setVisible(true);
 
-        disableDbButton();
-
         activateMouseListenersOnTxtFields();
+        activateMouseListenerForDbToCsvExport();
 
         launchPowerCaptureTest();
+    }
+
+    /**
+     * Mouse listener so initiate exporting the DB contents into a CSV file.
+     */
+    public void activateMouseListenerForDbToCsvExport(){
+        bttnExportToCsv.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                DbWorker dw = new DbWorker();
+
+                try {
+
+                    dw.exportToCsvPretty(
+                            targetDirectoryForCsv()
+                    );
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+
+    }
+
+    /**
+     * We launch a Path Chooser to have the user select the target location of the CSV file.
+     * @return Target Directory for the CSV file to be saved at.
+     */
+    private String targetDirectoryForCsv(){
+
+        String targetPath = "";
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int option = fileChooser.showOpenDialog(PowerReadTest.this);
+        if(option == JFileChooser.APPROVE_OPTION){
+            File file = fileChooser.getSelectedFile();
+            targetPath = file.getAbsolutePath();
+            System.out.println(targetPath);
+        }
+        else{
+        }
+
+        return targetPath;
     }
 
     /**
@@ -91,19 +136,21 @@ public class PowerReadTest extends JFrame{
         });
     }
 
+    /**
+     * Read values from the GUI and put in local variables.
+     */
     private void refreshValues(){
 
-        this.myMin = Integer.parseInt(txtFldMinValue.getText());
-        this.myMax = Integer.parseInt(txtFldMaxValue.getText());
-        this.myResult = Integer.parseInt(txtFldResult.getText());
+        this.myMinPower = Integer.parseInt(txtFldMinValue.getText());
+        this.myMaxPower = Integer.parseInt(txtFldMaxValue.getText());
+        this.myActualPower = Integer.parseInt(txtFldResult.getText());
     }
 
     private void showErrorMessageBox(String s){
         int result = JOptionPane.showConfirmDialog(this
                 , s
                 , "INVALID INPUT"
-                , JOptionPane.OK_OPTION
-        //        , JOptionPane.QUESTION_MESSAGE
+                , JOptionPane.PLAIN_MESSAGE
         );
 
         updateTestStatusOnGui(s);
@@ -133,11 +180,11 @@ public class PowerReadTest extends JFrame{
     }
 
     private void enableDbButton(){
-        bttnSaveToDb.setVisible(true);
+        bttnExportToCsv.setVisible(true);
     }
 
     private void disableDbButton(){
-        bttnSaveToDb.setVisible(false);
+        bttnExportToCsv.setVisible(false);
     }
 
     private void launchPowerCaptureTest(){
@@ -151,9 +198,9 @@ public class PowerReadTest extends JFrame{
 
                     PowerTest pt = new PowerTest(
                             new Date().getTime()
-                            , myMin
-                            , myMax
-                            , myResult
+                            , myMinPower
+                            , myMaxPower
+                            , myActualPower
                     );
 
 
@@ -228,7 +275,7 @@ public class PowerReadTest extends JFrame{
 
         boolean inRange = true;
 
-        if (myResult < myMin || myResult > myMax){
+        if (myActualPower < myMinPower || myActualPower > myMaxPower){
             inRange = false;
         }
 

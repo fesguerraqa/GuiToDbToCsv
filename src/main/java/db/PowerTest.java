@@ -20,66 +20,14 @@ public class PowerTest {
         checkForValidityOfInputs();
 
         if(!this.testStatus.equals(testStatusEnum.INVALID.toString())){
-            printStatus("Prior to RUN TEST");
             runTest();
-            printStatus("AFTER run TEST");
         }
-    }
-
-    private void printStatus(String s) {
-        HelperTool.ezPrint(s + "--> Test Status: " + getTestStatus() + ", Verbose: " + getTestStatusVerbose());
-    }
-
-    private boolean runTest(){
-        boolean inRange = false;
-
-        if (this.actualPower < this.maxPower && this.actualPower > this.minPower){
-            inRange = true;
-            testStatus = testStatusEnum.PASS.toString();
-        }
-
-        this.testStatusVerbose = this.testStatus;
-
-        return inRange;
     }
 
     public String getTestStatusVerbose(){
         return this.testStatusVerbose;
     }
 
-    private boolean checkForValidityOfInputs(){
-
-        boolean inputValuesValid = true;
-
-        this.testStatus = testStatusEnum.FAIL.toString();
-
-        try {
-
-            if (this.minPower > this.maxPower) {
-
-                this.testStatusVerbose = "INVALID: MIN CANNOT be greater than MAX";
-                this.testStatus = testStatusEnum.INVALID.toString();
-                inputValuesValid = false;
-//                showErrorMessageBox(errMinMax);
-            }
-            else if (this.minPower == this.maxPower) {
-
-                this.testStatusVerbose = "INVALID: MIN and MAX Cannot be EQUAL";
-                this.testStatus = testStatusEnum.INVALID.toString();
-                inputValuesValid = false;
-//                showErrorMessageBox(errEqual);
-            }
-        }
-        catch (Exception ex){
-
-            String exception = ex.getMessage();
-            this.testStatusVerbose = testStatusEnum.INVALID.toString() + " INPUT FOUND: " + exception;
-            this.testStatus = testStatusEnum.INVALID.toString();
-            //showErrorMessageBox("Invalid INPUT FOUND: " + exception);
-        }
-
-        return inputValuesValid;
-    }
 
     public long getTestTime() {
         return this.testTime;
@@ -100,6 +48,58 @@ public class PowerTest {
     public String getTestStatus(){
         return this.testStatus;
 
+    }
+
+    /**
+     * Run test here and populate test result.
+     * @return Returns pass is Actual Power is between Min and Max
+     */
+    private boolean runTest(){
+        boolean inRange = false;
+
+        if (this.actualPower < this.maxPower && this.actualPower > this.minPower){
+            inRange = true;
+            testStatus = testStatusEnum.PASS.toString();
+        }
+
+        this.testStatusVerbose = this.testStatus;
+
+        return inRange;
+    }
+
+    /**
+     * Checks for invalid characters or invalid value combination of Min and Max.
+     * @return
+     */
+    private boolean checkForValidityOfInputs(){
+
+        boolean inputValuesValid = true;
+
+        this.testStatus = testStatusEnum.FAIL.toString();
+
+        try {
+
+            if (this.minPower > this.maxPower) {
+
+                this.testStatusVerbose = "INVALID: MIN CANNOT be greater than MAX";
+                this.testStatus = testStatusEnum.INVALID.toString();
+                inputValuesValid = false;
+            }
+            else if (this.minPower == this.maxPower) { //TODO: There is an argument that this can be a valid option.
+
+                this.testStatusVerbose = "INVALID: MIN and MAX Cannot be EQUAL";
+                this.testStatus = testStatusEnum.INVALID.toString();
+                inputValuesValid = false;
+            }
+        }
+        catch (Exception ex){
+
+            String exception = ex.getMessage();
+            this.testStatusVerbose = "INVALID INPUT FOUND: " + exception;
+            this.testStatus = testStatusEnum.INVALID.toString();
+        }
+
+        return inputValuesValid;
     }
 
     /**

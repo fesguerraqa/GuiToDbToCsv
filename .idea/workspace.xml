@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ea970531-55b5-4d3b-a363-9e3334c36b4a" name="Changes" comment="1) Test now can write into a DB. Verified cancelling the action doesn't write into the DB.&#10;2) More cleanup&#10;3) Added PowerTest.java class now in git.">
+    <list default="true" id="ea970531-55b5-4d3b-a363-9e3334c36b4a" name="Changes" comment="Moved the logic for populating the PowerTest instance to the PowerTest java class and not on the Form.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/db/DbWorker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/db/DbWorker.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/db/PowerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/db/PowerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gui/testrunner/PowerReadTest.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/testrunner/PowerReadTest.form" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/gui/testrunner/PowerReadTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/testrunner/PowerReadTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -104,7 +106,7 @@
       <workItem from="1708548932410" duration="179000" />
       <workItem from="1708549132506" duration="428000" />
       <workItem from="1708549682873" duration="68000" />
-      <workItem from="1708549782826" duration="35750000" />
+      <workItem from="1708549782826" duration="39057000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit. Reading from DB and Writing to CSV File is initially working.">
       <option name="closed" value="true" />
@@ -146,7 +148,15 @@
       <option name="project" value="LOCAL" />
       <updated>1708624183293</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Moved the logic for populating the PowerTest instance to the PowerTest java class and not on the Form.">
+      <option name="closed" value="true" />
+      <created>1708631747588</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1708631747588</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -169,7 +179,8 @@
     <MESSAGE value="Redesigned GUI to use multiple JPanels for each section." />
     <MESSAGE value="GUI Layout improvements. Added MessageBoxes for error handling and confirmation to rerun test or save to DB." />
     <MESSAGE value="1) Test now can write into a DB. Verified cancelling the action doesn't write into the DB.&#10;2) More cleanup&#10;3) Added PowerTest.java class now in git." />
-    <option name="LAST_COMMIT_MESSAGE" value="1) Test now can write into a DB. Verified cancelling the action doesn't write into the DB.&#10;2) More cleanup&#10;3) Added PowerTest.java class now in git." />
+    <MESSAGE value="Moved the logic for populating the PowerTest instance to the PowerTest java class and not on the Form." />
+    <option name="LAST_COMMIT_MESSAGE" value="Moved the logic for populating the PowerTest instance to the PowerTest java class and not on the Form." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
