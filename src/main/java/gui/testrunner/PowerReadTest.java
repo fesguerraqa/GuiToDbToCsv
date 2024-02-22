@@ -3,6 +3,8 @@ package gui.testrunner;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -14,6 +16,15 @@ public class PowerReadTest extends JFrame{
     private JButton bttnRunSimTest;
     private JButton bttnSaveToDb;
     private JLabel lblPassOrFail;
+    private JPanel pnlMinVal;
+    private JPanel pnlMaxValue;
+    private JPanel pnlTestResult;
+    private JPanel pnlStatus;
+    private JPanel pnlButtons;
+    private JLabel lblMinValue;
+    private JLabel lblMaxValue;
+    private JLabel lblResult;
+    private JLabel lblStatusLabel;
 
     private int myMin;
     private int myMax;
@@ -22,6 +33,8 @@ public class PowerReadTest extends JFrame{
 
 
     public static void main(String[] args) throws SQLException, IOException {
+
+
 
         new PowerReadTest();
 //        DbWorker dw = new DbWorker();
@@ -36,7 +49,7 @@ public class PowerReadTest extends JFrame{
         setTitle("Power Capture Tool");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setContentPane(jPnlMain);
-        setSize(800, 600);
+        setSize(600, 400);
         setLocationRelativeTo(null);
         setVisible(true);
 
@@ -44,6 +57,28 @@ public class PowerReadTest extends JFrame{
 
 
         simulateTest();
+
+        txtFldMinValue.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                lblPassOrFail.setText("Entering expected MIN value on GUI...");
+            }
+        });
+        txtFldMaxValue.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                lblPassOrFail.setText("Entering expected MAX Value on GUI...");
+            }
+        });
+        txtFldResult.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                lblPassOrFail.setText("Entering Test Result on GUI...");
+            }
+        });
     }
 
     private void refreshValues(){
@@ -65,10 +100,12 @@ public class PowerReadTest extends JFrame{
                 lblPassOrFail.setText("INVALID: MIN Input CANNOT be greater than MAX");
                 isValid = false;
                 disableDbButton();
+                JOptionPane.showMessageDialog(this, "ERROR: Min > Max");
             } else if (myMin == myMax) {
                 lblPassOrFail.setText("INVALID: MIN AND MAX Cannot be EQUAL");
                 isValid = false;
                 disableDbButton();
+                JOptionPane.showConfirmDialog(this, "ERROR: MIN = MAX");
             }
         }
         catch (Exception ex){
@@ -76,8 +113,6 @@ public class PowerReadTest extends JFrame{
         }
 
         return isValid;
-
-
     }
 
     private void clearLabel(){
