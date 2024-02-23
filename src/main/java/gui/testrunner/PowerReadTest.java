@@ -34,9 +34,9 @@ public class PowerReadTest extends JFrame{
     private JLabel lblResult;
     private JLabel lblStatusLabel;
 
-    private int myMinPower;
-    private int myMaxPower;
-    private int myActualPower;
+    private float myMinPower;
+    private float myMaxPower;
+    private float myActualPower;
 
 
     public static void main(String[] args) throws SQLException, IOException {
@@ -72,9 +72,16 @@ public class PowerReadTest extends JFrame{
 
                 try {
 
-                    dw.exportToCsvPretty(
-                            targetDirectoryForCsv()
-                    );
+                    String location = targetDirectoryForCsv();
+
+                    if (!location.isEmpty()) {
+                        dw.exportToCsvPretty(location);
+
+                        updateTestStatusOnGui("CSV file created in: " + location);
+                    } else {
+                        updateTestStatusOnGui("Export Cancelled.");
+                    }
+
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 } catch (IOException ex) {
@@ -131,7 +138,7 @@ public class PowerReadTest extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                updateTestStatusOnGui("Entering Test Result on GUI...");
+                updateTestStatusOnGui("Simulating a Results Capture on GUI...");
             }
         });
     }
@@ -141,9 +148,9 @@ public class PowerReadTest extends JFrame{
      */
     private void refreshValues(){
 
-        this.myMinPower = Integer.parseInt(txtFldMinValue.getText());
-        this.myMaxPower = Integer.parseInt(txtFldMaxValue.getText());
-        this.myActualPower = Integer.parseInt(txtFldResult.getText());
+        this.myMinPower = Float.parseFloat(txtFldMinValue.getText());
+        this.myMaxPower = Float.parseFloat(txtFldMaxValue.getText());
+        this.myActualPower = Float.parseFloat(txtFldResult.getText());
     }
 
     private void showErrorMessageBox(String s){
@@ -206,8 +213,6 @@ public class PowerReadTest extends JFrame{
 
                     if (!pt.getTestStatus().equals(PowerTest.testStatusEnum.INVALID.toString())) {
 
-                        //boolean testStatus = processTest();
-
                         try {
                             saveOrRerunTest( pt);
                         } catch (SQLException ex) {
@@ -221,9 +226,7 @@ public class PowerReadTest extends JFrame{
                 }
                 catch (Exception ex){
                     showErrorMessageBox("EXCEPTION: " + ex.getMessage());
-
                 }
-
             };
         });
     }
@@ -241,19 +244,13 @@ public class PowerReadTest extends JFrame{
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
         if(result == JOptionPane.YES_OPTION){
-//            PowerTest pt = new PowerTest(
-//                    new Date().getTime()
-//                    , myMin
-//                    , myMax
-//                    , myResult
-//            );
 
             DbWorker dw = new DbWorker();
             dw.savePowerTestResultToDb(pt);
 
             testStatus = "Saved in DB!";
         }else if (result == JOptionPane.NO_OPTION){
-            testStatus = "Lets do it again";
+            testStatus = "Lets do it again!";
         }
 
         updateTestStatusOnGui(testStatus);

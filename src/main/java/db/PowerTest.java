@@ -55,11 +55,12 @@ public class PowerTest {
      * @return Returns pass is Actual Power is between Min and Max
      */
     private boolean runTest(){
-        boolean inRange = false;
+        boolean inRange = true;
+        testStatus = testStatusEnum.PASS.toString();
 
-        if (this.actualPower < this.maxPower && this.actualPower > this.minPower){
-            inRange = true;
-            testStatus = testStatusEnum.PASS.toString();
+        if (this.actualPower > this.maxPower || this.actualPower < this.minPower){
+            inRange = false;
+            testStatus = testStatusEnum.FAIL.toString();
         }
 
         this.testStatusVerbose = this.testStatus;

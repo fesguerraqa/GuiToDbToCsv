@@ -149,6 +149,7 @@ public class DbWorker {
      * @throws IOException
      */
     private void exportToCsvFile(boolean prettyPrint, String targetLocation) throws SQLException, IOException {
+
         connectDb();
 
         String query = "SELECT * FROM " + dbTable.power_test;
